@@ -10,9 +10,8 @@
   <link rel="stylesheet" href="styles/style.css">
   <title>Chess trainer</title>
 </head>
-
 <body>
-  <div class="jumbotron jumbotron-fluid bg-info text-white">
+  <div class="jumbotron jumbotron-fluid bg-neat text-white">
     <div class="container">
       <h1>Chess trainer</h1>
     </div>
@@ -20,21 +19,34 @@
   <div class="container">
     <div class="row mt-5">
       <div class="col-6">
-        <h4>Welcome</h4>
+        <label>Paste moves</label>
+      </div>
+      <div class="col-1"></div>
+      <div class="col-3">
+        <label>Select file</label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-6">
+        <input class="form-control" type="text" id="input-moves">
+      </div>
+      <div class="col-1 text-center">
+        <h4>OR</h4>
+      </div>
+      <div class="col-3">
+        <input id="input-file" class="d-none" type="file" accept="pgn">
+        <button id="btn-open" class="btn btn-primary form-control">OPEN PGN</button>
+      </div>
+      <div class="col-2">
+        <button id="btn-start" class="btn btn-primary float-right">START</button>
       </div>
     </div>
     <div class="row mt-5">
       <div class="col-6">
-        <input id="input-file" class="d-none" type="file" accept="pgn">
-        <button id="btn-open" class="btn btn-primary form-control">OPEN PGN</button>
+        <span id="span-moves"></span>
       </div>
     </div>
   </div>
-
-
-
-
-
 
   <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
     crossorigin="anonymous"></script>
