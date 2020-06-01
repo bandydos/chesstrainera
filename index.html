@@ -17,8 +17,8 @@
     </div>
   </div>
   <div class="container">
-    <div class="row mt-5">
-      <div class="col-6">
+    <div id="div-labels" class="row mt-5">
+      <div class="col-5">
         <label>Paste moves</label>
       </div>
       <div class="col-1"></div>
@@ -26,8 +26,8 @@
         <label>Select file</label>
       </div>
     </div>
-    <div class="row">
-      <div class="col-6">
+    <div id="div-input" class="row">
+      <div class="col-5">
         <input class="form-control" type="text" id="input-moves">
       </div>
       <div class="col-1 text-center">
@@ -38,6 +38,14 @@
         <button id="btn-open" class="btn btn-primary form-control">OPEN PGN</button>
       </div>
       <div class="col-2">
+        <select id="select-level" class="form-control">
+          <option disabled selected>...</option>
+          <option value="s">slow</option>
+          <option value="m">medium</option>
+          <option value="f">fast</option>
+        </select>
+      </div>
+      <div class="col-1">
         <button id="btn-start" class="btn btn-primary float-right">START</button>
       </div>
     </div>
@@ -49,8 +57,12 @@
             <th>MOVE</th>
           </thead>
           <tbody id="tbody-moves"></tbody>
-          <span id="span-message"></span>
         </table>
+        <span id="span-message"></span>
+      </div>
+      <audio id="audio-speech" class="d-none"></audio>
+      <div class="col-6 text-center">
+        <button id="btn-reset" class="btn btn-primary">RESET</button>
       </div>
     </div>
   </div>

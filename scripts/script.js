@@ -3,8 +3,12 @@ $(document).ready(() => {
     const btnOpen = $('#btn-open');
     const inputFile = $('#input-file');
     const tableMoves = $('#table-moves');
+    const btnReset = $('#btn-reset');
+
     const pgnfile = inputFile[0].files[0];
     tableMoves.hide();
+    btnReset.hide();
+
     btnOpen.click(() => {
         inputFile.click();
     })
@@ -14,23 +18,53 @@ $(document).ready(() => {
     btnStart.click(() => {
         readData();
     })
+    btnReset.click(() => {
+        clearTimeout(timer);
+        $('#table-moves tbody tr').remove();
+        showElems(false);
+    })
 });
+// let timer;
 
 const readData = () => {
     const spanMessage = $('#span-message');
     const tableMoves = $('#table-moves');
     const moves = seperateMoves();
     const valid = isValid();
-    if (valid == true) {
-        tableMoves.show();
-        spanMessage.hide();
+    const intervalSpeed = getIntervalSpeed();
+    showElems(valid);
+    clearTimeout(timer);
+    $('#table-moves tbody tr').remove();
+    if (valid === true) {
         for (let i = 0; i < moves.length; i++) {
-            iterationLevel(i, 500);
+            iterationLevel(i, intervalSpeed);
         }
     } else {
-        tableMoves.hide();
-        spanMessage.show();
-        spanMoves.textContent = 'Something went wrong, check input please.';
+        clearTimeout(timer);
+        spanMessage.text('Something went wrong, check input please.');
+    }
+}
+
+const speech = () => {
+
+    let text = 'hello';
+    let url = `https://translate.google.com/translate_tts?ie=UTF-8&tl=en-TR&client=tw-ob&q=${text}`;
+}
+
+var timer;
+var iterator = 0;
+// Iterate over moves with delay.
+const iterationLevel = (i, interval) => {
+    const moves = seperateMoves();
+    timer = setTimeout(() => {
+        $('#tbody-moves').append(`<tr><td>${i + 1}</td><td>${getFull(moves[i])}</td></tr>`);
+
+        
+
+    }, interval * i);
+    if (i >= moves.length) {
+        clearTimeout(timer);
+        i = 0;
     }
 }
 
@@ -45,6 +79,28 @@ const isValid = () => {
         }
     }
     return valid;
+}
+
+const showElems = (valid) => {
+    const spanMessage = $('#span-message');
+    const tableMoves = $('#table-moves');
+    //const tableRows = $('#table-moves tbody tr'); 
+    const divLabels = $('#div-labels');
+    const divInput = $('#div-input');
+    const btnReset = $('#btn-reset');
+    if (valid === true) {
+        divLabels.hide();
+        divInput.hide();
+        spanMessage.hide();
+        tableMoves.show();
+        btnReset.show();
+    } else {
+        divLabels.show();
+        divInput.show();
+        spanMessage.show();
+        tableMoves.hide();
+        btnReset.hide();
+    }
 }
 
 // Get moves per number e.g. 1.d4 d5 2.nf3 nc6
@@ -76,14 +132,18 @@ const seperateMoves = () => {
     return seperateMoves;
 }
 
-// Iterate over moves with delay.
-const iterationLevel = (i, interval) => {
-    const moves = seperateMoves();
-    let timer = setTimeout(() => {
-        $('#tbody-moves').append(`<tr><td>${i + 1}</td><td>${moves[i]}</td></tr>`);
-        if (i === moves.length - 1) {
-            clearTimeout(timer);
-        }
-    }, interval * i);
+// Get interval speed.
+const getIntervalSpeed = () => {
+    const selectedVal = $('#select-level').val();
+    let interval;
+    if (selectedVal === 's') interval = 6000;
+    if (selectedVal === 'm') interval = 4000;
+    if (selectedVal === 'f') interval = 1000;
+    return interval;
 }
 
+const getFull = (move) => {
+    return move.replace('N', ' knight ').replace('B', ' bishop ')
+    .replace('R', ' rook ').replace('Q', ' queen ').replace('K', ' king ')
+    .replace('x', ' takes ').replace('+', ' check ');
+}
