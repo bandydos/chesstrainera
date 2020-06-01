@@ -25,19 +25,8 @@ const readData = () => {
         tableMoves.show();
         spanMessage.hide();
         for (let i = 0; i < moves.length; i++) {
-            let timeout = setTimeout(() => {
-                let counter = 0;
-                $('#tbody-moves').append(`<tr><td>${i + 1}</td><td>${moves[i]}</td></tr>`);
-
-                if (counter === moves.length) {
-                    clearTimeout(timeout);
-                }
-            }, 2000);
-            
-            
+            iterationLevel(i, 500);
         }
-
-
     } else {
         tableMoves.hide();
         spanMessage.show();
@@ -87,4 +76,14 @@ const seperateMoves = () => {
     return seperateMoves;
 }
 
+// Iterate over moves with delay.
+const iterationLevel = (i, interval) => {
+    const moves = seperateMoves();
+    let timer = setTimeout(() => {
+        $('#tbody-moves').append(`<tr><td>${i + 1}</td><td>${moves[i]}</td></tr>`);
+        if (i === moves.length - 1) {
+            clearTimeout(timer);
+        }
+    }, interval * i);
+}
 
