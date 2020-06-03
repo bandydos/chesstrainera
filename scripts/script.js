@@ -21,7 +21,7 @@ $(document).ready(() => {
     })
     btnReset.click(() => {
         $('#table-moves tbody tr').remove();
-        while(timers.length) clearTimeout(timers.shift())
+        while (timers.length) clearTimeout(timers.shift())
         showElems(false);
     })
 });
@@ -67,7 +67,7 @@ const isValid = () => {
     const moves = parsedMoves();
     let valid;
     const regmove = /^([NBRQK])?([a-h])?([1-8])?(x)?([a-h][1-8])(=[NBRQK])?(\+|#)?$|^O-O(-O)?$/;
-    const regscore = /(^0?\-1?$)|(^1?\-0?$)|(^1?\/2?\-1?\/2?$)/;
+    const regscore = /((^0\-1$){1})|((^1\-0$){1})|((^1\/2\-1\/2$){1})/;
     for (let i = 0; i < moves.length; i++) {
         if (regmove.test(moves[i]) || regscore.test(moves[i])) {
             valid = true;
@@ -104,8 +104,8 @@ const getIntervalSpeed = () => {
 // Needs work => fix spaces befor words & double spaces.
 const getFull = (move) => {
     return move.replace('N', ' knight ').replace('B', ' bishop ')
-    .replace('R', ' rook ').replace('Q', ' queen ').replace('K', ' king ')
-    .replace('x', ' takes ').replace('+', ' check ').replace('#', ' checkmate ');
+        .replace('R', ' rook ').replace('Q', ' queen ').replace('K', ' king ')
+        .replace('x', ' takes ').replace('+', ' check ').replace('#', ' checkmate ');
 }
 
 // Specify elements to display when valid or invalid.
