@@ -21,49 +21,38 @@ $(document).ready(() => {
     })
     btnReset.click(() => {
         $('#table-moves tbody tr').remove();
-        while (timers.length) clearTimeout(timers.shift())
+        clearTimeout(timeout);
         showElems(false);
     })
 });
 
 
-const readData = () => {
+async function readData() {
     const spanMessage = $('#span-message');
     const moves = parsedMoves();
     const valid = isValid();
-    const intervalSpeed = getIntervalSpeed();
+    const tempo = getTempo();
     showElems(valid);
     $('#table-moves tbody tr').remove();
     if (valid === true) {
         for (let i = 0; i < moves.length; i++) {
-            iterationLevel(i, intervalSpeed);
+            $('#tbody-moves').append(`<tr><td>${i + 1}</td><td>${getFull(moves[i])}</td></tr>`);
+            await delay(tempo);
         }
     } else {
         spanMessage.text('Something went wrong, check input please.');
     }
 }
 
-// const speech = () => {
-//     let text = 'hello';
-//     let url = `https://translate.google.com/translate_tts?ie=UTF-8&tl=en-TR&client=tw-ob&q=${text}`;
-// }
-
-var timers = [];
-
-// Iterate over moves with delay.
-const iterationLevel = (i, interval) => {
-    const moves = parsedMoves();
-    timers.push(setTimeout(() => {
-        $('#tbody-moves').append(`<tr><td>${i + 1}</td><td>${getFull(moves[i])}</td></tr>`);
-    }, interval * i));
-    if (i >= moves.length) {
-        clearTimeout(timers.pop());
-        i = 0;
-    }
+var timeout;
+function delay(ms) {
+    return new Promise((x) => {
+        timeout = setTimeout(x, ms)
+    });
 }
 
 // Validate.
-const isValid = () => {
+function isValid() {
     const moves = parsedMoves();
     let valid;
     const regmove = /^([NBRQK])?([a-h])?([1-8])?(x)?([a-h][1-8])(=[NBRQK])?(\+|#)?$|^O-O(-O)?$/;
@@ -78,38 +67,38 @@ const isValid = () => {
     return valid;
 }
 
-// Parse PGN file to array of moves.
+// Parse PGN text to array of moves.
 function parsedMoves() {
     const full = $('#input-pgn').val();
     const moves = full.substring(full.lastIndexOf(']') + 1);
-    const splitted = moves.split(/\s/);
-    const reg = /[0-9]+\./;
+    const splitted = moves.split(/\s/); // Split per space.
+    const reg = /[0-9]+\./; // Numbering regex.
     const filtered = splitted.filter((x) => {
-        return !reg.test(x) && x; // Filter out by regex + empty strings.
+        return !reg.test(x) && x; // Filter out numbering + empty strings.
     });
     return filtered;
 }
 
 // Get interval speed.
-const getIntervalSpeed = () => {
+function getTempo() {
     const selectedVal = $('#select-level').val();
     let interval;
-    if (selectedVal === 's') interval = 6000;
-    if (selectedVal === 'm') interval = 4000;
+    if (selectedVal === 's') interval = 6000; // Slow
+    if (selectedVal === 'm') interval = 4000; // ...
     if (selectedVal === 'f') interval = 250;
     return interval;
 }
 
 // Get full name.
-// Needs work => fix spaces befor words & double spaces.
-const getFull = (move) => {
+function getFull(move) {
     return move.replace('N', ' knight ').replace('B', ' bishop ')
-        .replace('R', ' rook ').replace('Q', ' queen ').replace('K', ' king ')
-        .replace('x', ' takes ').replace('+', ' check ').replace('#', ' checkmate ');
+    .replace('R', ' rook ').replace('Q', ' queen ').replace('K', ' king ')
+    .replace('x', ' takes ').replace('+', ' check ').replace('#', ' checkmate ')
+    .replace(/\s+/g, ' '); // Single spaces.
 }
 
 // Specify elements to display when valid or invalid.
-const showElems = (valid) => {
+function showElems(valid) {
     const spanMessage = $('#span-message');
     const tableMoves = $('#table-moves');
     //const tableRows = $('#table-moves tbody tr'); 
