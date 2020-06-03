@@ -67,7 +67,7 @@ const isValid = () => {
     const moves = parsedMoves();
     let valid;
     const regmove = /^([NBRQK])?([a-h])?([1-8])?(x)?([a-h][1-8])(=[NBRQK])?(\+|#)?$|^O-O(-O)?$/;
-    const regscore = /((^0\-1$){1})|((^1\-0$){1})|((^1\/2\-1\/2$){1})/;
+    const regscore = /^1-0$|^0-1$|^1\/2-1\/2$/;
     for (let i = 0; i < moves.length; i++) {
         if (regmove.test(moves[i]) || regscore.test(moves[i])) {
             valid = true;
