@@ -1,8 +1,10 @@
 $(document).ready(() => {
     const btnStart = $('#btn-start');
+    const btnPause = $('#btn-pause');
+    const btnRestart = $('#btn-restart');
+    const btnReset = $('#btn-reset');
     const btnOpen = $('#btn-open');
     const inputFile = $('#input-file');
-    const btnReset = $('#btn-reset');
 
     showElems('stopped'); // Hide table ...
     btnOpen.click(() => {
@@ -10,30 +12,41 @@ $(document).ready(() => {
     });
     inputFile.change(() => {
     });
-
     btnStart.click(() => {
         readData();
     });
+    btnPause.click(() => {
+        clearTimeout(timer);
+        showElems('paused');
+    });
+    btnRestart.click(() => {
+        readData();
+        showElems('restarted')
+    });
     btnReset.click(() => {
         $('#table-moves tbody tr').remove();
-        clearTimeout(timeout);
+        clearTimeout(timer);
+        done = [];
         showElems('stopped');
         $('#span-message').hide();
     });
 });
+
+var done = [];
+var timer;
 
 async function readData() {
     const moves = parsedSeperateMoves();
     const valid = isValid();
     const tempo = getTempo();
 
-    $('#table-moves tbody tr').remove();
-
     if (valid === true) {
         showElems('started');
-        for (let i = 0; i < moves.length; i++) {
+        for (let i = done.length; i < moves.length; i++) {
+            await delay(tempo); // Some delay before.
+            done.push(moves[i]);
             $('#tbody-moves').append(`<tr><td>${i + 1}</td><td>${getFull(moves[i])}</td></tr>`);
-            await delay(tempo);
+            await delay(tempo); // Some delay after.
         }
     } else {
         showElems('stopped');
@@ -41,10 +54,9 @@ async function readData() {
     }
 }
 
-var timeout;
 function delay(ms) {
     return new Promise((x) => {
-        timeout = setTimeout(x, ms)
+        timer = setTimeout(x, ms)
     });
 }
 
@@ -119,9 +131,9 @@ function parsedSeperateMoves() {
 function getTempo() {
     const selectedVal = $('#select-level').val();
     let interval;
-    if (selectedVal === 's') interval = 6000; // Slow
-    if (selectedVal === 'm') interval = 4000; // ...
-    if (selectedVal === 'f') interval = 250;
+    if (selectedVal === 's') interval = 2000; // Slow
+    if (selectedVal === 'm') interval = 1500; // ...
+    if (selectedVal === 'f') interval = 1000;
     return interval;
 }
 
@@ -140,17 +152,29 @@ function showElems(action) {
     const divLabels = $('#div-labels');
     const divInput = $('#div-input');
     const btnReset = $('#btn-reset');
+    const btnPause = $('#btn-pause');
+    const btnRestart = $('#btn-restart');
     if (action === 'started') {
         divLabels.hide();
         divInput.hide();
         spanMessage.hide();
         tableMoves.show();
         btnReset.show();
+        btnPause.show();
+        btnRestart.hide();
     } else if (action === 'stopped') {
         divLabels.show();
         divInput.show();
         spanMessage.show();
         tableMoves.hide();
         btnReset.hide();
+        btnPause.hide();
+        btnRestart.hide();
+    } else if (action === 'paused') {
+        btnPause.hide();
+        btnRestart.show();
+    } else if (action === 'restarted') {
+        btnPause.show();
+        btnRestart.hide();
     }
 }
