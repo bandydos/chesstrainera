@@ -78,7 +78,7 @@ function isValid() {
 function parsedFullMoves() {
     const full = $('#input-pgn').val();
 
-    const firstMove = /1\.([a-h]|[NBRQK])/ // Search first move.
+    const firstMove = /1\.\s?([a-h]|[NBRQK])/ // Search first move.
     const moves = full.substring(full.search(firstMove));
 
     const reg = /[0-9]+\./; // Numbering regex.
